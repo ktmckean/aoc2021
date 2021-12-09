@@ -84,32 +84,33 @@ def exploreBasins(heights):
 				basinSizes.append(size)
 	return basinSizes
 
-#def exploreNeighbors(x,y,basins,coordsToExplore):
-
+#def exploreNeighbors(x,y,basins,frontier):
 
 def exploreBasinLoop(x,y,basins):
 	assert(basins[x][y] == 0)
-	
-	coordsToExplore = [[x,y]]
+	frontier = [[x,y]]
 	size = 0
-	while len(coordsToExplore) != 0:
-		x = coordsToExplore[0][0]
-		y = coordsToExplore[0][1]
+	while len(frontier) != 0:
+		x = frontier[0][0]
+		y = frontier[0][1]
+
+		if basins[x][y] != 1:
+			size += 1
+		frontier.remove([x,y])
 		basins[x][y] = 1
-		size += 1
-		coordsToExplore.remove([x,y])
 		
 		if x > 0 				and basins[x-1][y] == 0:
-			coordsToExplore.append([x-1,y])
+			frontier.append([x-1,y])
 			
 		if x < len(basins)-1 	and basins[x+1][y] == 0:
-			coordsToExplore.append([x+1,y])
+			frontier.append([x+1,y])
 			
 		if y > 0  				and basins[x][y-1] == 0:
-			coordsToExplore.append([x,y-1])
+			frontier.append([x,y-1])
 			
 		if y < len(basins[x])-1 and basins[x][y+1] == 0:
-			coordsToExplore.append([x,y+1])
+			frontier.append([x,y+1])
+
 	return basins,size
 			
 def exploreBasinsWithLoop(heights):
@@ -121,6 +122,7 @@ def exploreBasinsWithLoop(heights):
 				basins,size = exploreBasinLoop(x,y,basins)
 				basinSizes.append(size)
 	return basinSizes
+	
 
 def getMax3Product(basinSizes):
 	maxProduct = 1
@@ -132,13 +134,10 @@ def getMax3Product(basinSizes):
 
 heights = readInput()
 basinSizes = exploreBasins(heights)
-basinSizes2 = exploreBasinsWithLoop(heights)
-
 maxProduct = getMax3Product(basinSizes)
-print(getMax3Product(basinSizes))
+
+basinSizes2 = exploreBasinsWithLoop(heights)
 maxProduct2 = getMax3Product(basinSizes2)
-print(getMax3Product(basinSizes2))
+print(maxProduct2)
 
-
-	
 print(maxProduct)
