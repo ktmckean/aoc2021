@@ -19,18 +19,7 @@ def readInRooms():
 			rooms[startRoom] = {endRoom}
 	return rooms
 
-def roomHasExit(rooms, room, visited):
-	for exit in rooms[room]:
-		if exit not in visited:
-			return True
-	return False
-
-def getNextRoom(rooms, path, visited):
-	for exit in rooms[room]:
-		if exit not in visited:
-			return exit
-
-def generatePathRecursive(path, rooms, completed, double):
+def generatePathRecursive(path, rooms, completed, doubledBack):
 	path = path.copy()
 	if path[-1] == 'end':
 		completed.append(path)
@@ -39,17 +28,16 @@ def generatePathRecursive(path, rooms, completed, double):
 	path.append('')
 	for exit in rooms[path[-2]]:
 		if exit.islower() and exit in path:
-			#print("skipping "+exit)
-			if double or exit=='start':
+			if doubledBack or exit=='start':
 				continue
 			else:
-				double = exit
 				path[-1] = exit
-				completed = generatePathRecursive(path,rooms,completed,double)
-				double = 0
+				doubledBack = 1
+				completed = generatePathRecursive(path,rooms,completed,doubledBack)
+				doubledBack = 0
 		else:
 			path[-1] = exit
-			completed = generatePathRecursive(path,rooms,completed,double)
+			completed = generatePathRecursive(path,rooms,completed,doubledBack)
 	return completed
 
 def findAllPaths(rooms):
