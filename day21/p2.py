@@ -94,7 +94,7 @@ def takeTurn(places, dieRolls):
 		#if not allDone: print(oldPlace,newPlaces)
 	return newPlaces, wins, allDone
 
-def updateOtherPlayer(places,multiple):
+def updateOtherPlayer(places,increaseNum,increaseDenom):
 	newPlaces = copy.deepcopy(places)
 	#print(increase, losses,newPlaces)
 	for place,scoreCounts in places.items():
@@ -103,7 +103,7 @@ def updateOtherPlayer(places,multiple):
 				continue
 			else:
 				#print(place, score,count)
-				newPlaces[place][score] *= multiple
+				newPlaces[place][score] = increaseNum * places[place][score] / increaseDenom
 				if not newPlaces[place][score].is_integer:
 					print(newPlaces[place][score])
 					assert(false)
@@ -111,7 +111,7 @@ def updateOtherPlayer(places,multiple):
 					newPlaces[place][score] = int(newPlaces[place][score])
 				#newPlaces[place][score] -= losses
 				assert(newPlaces[place][score] >= 0)
-	print(multiple, newPlaces)
+	print(increaseNum / increaseDenom, newPlaces)
 	return newPlaces
 
 def buildDieRolls():
@@ -153,8 +153,9 @@ def playRealGames(p1start,p2start):
 			newNumGames = totalNumGames(newPlaces)
 
 			places1 = newPlaces.copy()
-			increase = newNumGames / oldNumGames
-			places2 = updateOtherPlayer(places2,increase)
+			#increase = newNumGames / oldNumGames # not precise enough
+			places2 = updateOtherPlayer(places2,newNumGames,oldNumGames)
+			print(totalNumGames(places1), totalNumGames(places2))
 			assert(totalNumGames(places1) == totalNumGames(places2))
 			
 			whoseTurn = 2
@@ -167,8 +168,9 @@ def playRealGames(p1start,p2start):
 			newNumGames = totalNumGames(newPlaces)
 			
 			places2 = newPlaces.copy()
-			increase = newNumGames / oldNumGames
-			places1 = updateOtherPlayer(places1,increase)			
+			#increase = newNumGames / oldNumGames
+			places1 = updateOtherPlayer(places1,newNumGames, oldNumGames)
+			print(totalNumGames(places1), totalNumGames(places2))
 			assert(totalNumGames(places1) == totalNumGames(places2))
 
 			whoseTurn = 1
