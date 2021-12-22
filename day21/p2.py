@@ -114,25 +114,28 @@ def updateOtherPlayer(places,multiple):
 	print(multiple, newPlaces)
 	return newPlaces
 
+def buildDieRolls():
+	dieKeys = [3,4,5,6,7,8,9]
+	dieVals = [1,3,6,7,6,3,1]
+	dieRolls = dict(zip(dieKeys,dieVals))
+	return dieRolls
+
+def buildPlaces():
+	placeKeys = [0,1,2,3,4,5,6,7,8,9]
+	placeVals = [{},{},{},{},{},{},{},{},{},{}]
+	places = dict(zip(placeKeys,placeVals))
+	return places
+
 def playRealGames(p1start,p2start):
 	# plan is to keep increasing the number of die rolls until all possible outcomes result in finished games.
 	# For each string of length N, we will add the number of wins to the winning player's count.
 	# NOTE: There is no reason to keep track of the player's rolls separately (only if we can keep track of who has won already)
-	dieKeys = [3,4,5,6,7,8,9]
-	dieVals = [1,3,6,7,6,3,1]
-	dieRolls = dict(zip(dieKeys,dieVals))
-	#print(dieRolls)
-
-	places1keys = [0,1,2,3,4,5,6,7,8,9]
-	places1vals = [{},{},{},{},{},{},{},{},{},{}]
-	places1 = dict(zip(places1keys,places1vals))
+	dieRolls = buildDieRolls()
+	places1 = buildPlaces()
 	places1[p1start-1] = dict(zip([0],[1]))
-	#print(places1)
-	places2keys = [0,1,2,3,4,5,6,7,8,9]
-	places2vals = [{},{},{},{},{},{},{},{},{},{}]
-	places2 = dict(zip(places2keys,places2vals))
+	places2 = buildPlaces()
 	places2[p2start-1] = dict(zip([0],[1]))
-	#print(places2)
+	
 	
 	wins1 = 0
 	wins2 = 0
@@ -147,20 +150,13 @@ def playRealGames(p1start,p2start):
 			wins1 += wins
 			if allDone:
 				break
-			#percentWins = wins / (oldNumGames * 27)
 			newNumGames = totalNumGames(newPlaces)
-			#print(wins,oldNumGames, wins / oldNumGames)
-			#print(newNumGames,oldNumGames, newNumGames - oldNumGames)
-			#print((wins/oldNumGames) * 27**numTurns)
-			#every non-zero cell in otherPlayer increases by #newgames - #oldGames
-			#every non-zero cell in otherPlayer decreases by wins
-			print(allDone)
-			increase = newNumGames / oldNumGames
-			print(newNumGames,increase,oldNumGames)
-			places2 = updateOtherPlayer(places2,increase)
-			
+
 			places1 = newPlaces.copy()
+			increase = newNumGames / oldNumGames
+			places2 = updateOtherPlayer(places2,increase)
 			assert(totalNumGames(places1) == totalNumGames(places2))
+			
 			whoseTurn = 2
 		else:
 			oldNumGames = totalNumGames(places2)
@@ -169,15 +165,10 @@ def playRealGames(p1start,p2start):
 			if allDone:
 				break
 			newNumGames = totalNumGames(newPlaces)
-			#print(newNumGames,oldNumGames, newNumGames - oldNumGames)
-			
-			print(allDone)
-			increase = newNumGames / oldNumGames
-			print(newNumGames,increase,oldNumGames)
-			places1 = updateOtherPlayer(places1,increase)
 			
 			places2 = newPlaces.copy()
-			print(totalNumGames(places1),totalNumGames(places2))
+			increase = newNumGames / oldNumGames
+			places1 = updateOtherPlayer(places1,increase)			
 			assert(totalNumGames(places1) == totalNumGames(places2))
 
 			whoseTurn = 1
